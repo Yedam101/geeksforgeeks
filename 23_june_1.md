@@ -89,3 +89,12 @@ class Solution:
         cur.next = list1 or list2
         return node.next
 ```
+
+###
+
+```
+
+```
+
+
+
