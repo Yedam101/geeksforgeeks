@@ -90,11 +90,6 @@ class Solution:
         return node.next
 ```
 
-###
-
-```
-
-```
 
 
 
