@@ -88,3 +88,138 @@ def solution(today, terms, privacies):
             answer.append(i+1)
     return answer
 ```
+
+### 200. Number of Islands
+
+```
+# class Solution:
+#     def numIslands(self, grid: List[List[str]]) -> int:
+#         m, n = len(grid), len(grid[0])
+#         check = [[False]*n for i in range(m)]
+        
+#         # 섬의 개수
+#         count = 0
+#         dx = [0, 0, 1, -1]
+#         dy = [1, -1, 0, 0]
+
+#         def dfs(x, y):
+#             for i in range(4):
+#                 nx = x + dx[i]
+#                 ny = y + dy[i]
+#                 if m <= nx or 0 > nx or n <= ny or 0 > ny:
+#                     return
+#                 elif grid[nx][ny] == '1' and check[nx][ny] == False:
+#                     check[nx][ny] = True
+#                     dfs(nx, ny)
+#             return  
+
+#         for i in range(m):
+#             for j in range(n):
+#                 if grid[i][j] == '1' and check[i][j] == False:
+#                     check[i][j] = True
+#                     count += 1
+#                     dfs(i, j)
+#         return count
+
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        m = len(grid)
+        if m == 0:  # Handle the case when grid is empty
+            return 0
+        n = len(grid[0])
+        
+        check = [[False]*n for _ in range(m)]
+        count = 0
+        dx = [0, 0, 1, -1]
+        dy = [1, -1, 0, 0]
+
+        def dfs(x, y):
+            if grid[x][y] == '0' or check[x][y]:
+                return
+            check[x][y] = True
+            for i in range(4):
+                nx = x + dx[i]
+                ny = y + dy[i]
+                if 0 <= nx < m and 0 <= ny < n:
+                    dfs(nx, ny)
+            
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == '1' and not check[i][j]:
+                    dfs(i, j)
+                    count += 1
+
+        return count
+```
+
+### 695. Max Area of Island
+
+```
+class Solution:
+    def maxAreaOfIsland(self, grid: List[List[int]]) -> int:
+        m = len(grid)
+        if m == 0:
+            return 0
+        n = len(grid[0])
+        check = [[False]*n for _ in range(m)]
+        
+        zmax = 0
+        dx = [0,0,1,-1]
+        dy = [1,-1,0,0]
+        def dfs(x, y):
+            # 종료조건 현재 0 이거나 체크가 참일때
+            if grid[x][y] == 0 or check[x][y]:
+                return 0
+            check[x][y] = True
+            count = 1
+            for i in range(4):
+                nx = x + dx[i]
+                ny = y + dy[i]
+                if 0 <= nx < m and 0 <= ny < n:
+                    count += dfs(nx, ny)
+            return count
+
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == 1 and not check[i][j]:
+                    xmax = dfs(i, j)
+                    zmax = max(zmax, xmax)
+        return zmax
+```
+
+### 130. Surrounded Regions
+
+```
+class Solution:
+    def solve(self, board: List[List[str]]) -> None:
+        """
+        Do not return anything, modify board in-place instead.
+        """
+        if not board:
+            return []
+        m, n = len(board), len(board[0])
+        check = [[False]*n for _ in range(m)]
+
+        dx = [0,0,1,-1]
+        dy = [1,-1,0,0]
+        def dfs(x, y):
+            if board[x][y] != "O" or check[x][y]:
+                return
+            check[x][y] = True
+
+            for i in range(4):
+                nx = x + dx[i]
+                ny = y + dy[i]
+                if 0 <= nx < m and 0 <= ny < n:
+                    dfs(nx, ny)
+
+        for i in range(m):
+            for j in range(n):
+                if i == 0 or i == m-1 or j == 0 or j == n-1:
+                    dfs(i, j)
+
+        for i in range(m):
+            for j in range(n):
+                if not check[i][j] and board[i][j] == 'O':
+                    board[i][j] = "X"
+```
