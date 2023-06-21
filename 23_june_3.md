@@ -17,57 +17,7 @@ def solution(cacheSize, cities):
             q.pop(0)
     return count
 ```
-
-### 프로그래머스 방금그곡 틀린 코드 아 재생시간 고려 안함;;
-
-```
-def solution(m, musicinfos): 
-    musicinfos = [i.split(",") for i in musicinfos]
-    # m의 '#' -> 소문자로
-    left, right, m = 0, 1, list(m)
-    while right < len(m):
-        if m[right] == '#':
-            m[left:right+1] = m[left].lower()
-        else:
-            left, right = left+1, right+1
-    m = ''.join(m)
-
-    
-    for i in range(len(musicinfos)):
-        # 시간 하나로
-        temp = musicinfos[i].pop(0)
-        temp = int(temp[:2])*60+int(temp[3:5])
-        musicinfos[i][0] = (int(musicinfos[i][0][:2])*60+int(musicinfos[i][0][3:5])) - temp
-        
-        # 악보 '#' -> 소문자로
-        left, right, mscf = 0, 1, list(musicinfos[i][2])
-        while right < len(mscf):
-            if mscf[right] == '#':
-                mscf[left:right+1] = mscf[left].lower()
-            else:
-                left, right = left+1, right+1
-        musicinfos[i][2] = ''.join(mscf)
-    
-    result = []
-    for i in range(len(musicinfos)):
-        mscf = musicinfos[i][2]
-        short = min(len(m), len(mscf))
-        long = max(len(m), len(mscf))
-        for j in range(long):
-            if m[:short] in mscf[:short]:
-                result.append(musicinfos[i])
-                break
-            else:
-                mscf = mscf[1:] + mscf[0]
-        
-    if not result:
-        return "(None)"
-    result = sorted(result, key=lambda x:-x[0])               
-    return result[0][1]
-
-```
-
-### 프로그래머스 방금그곡 수정해서 정답
+### 프로그래머스 방금그곡 
 ```
 def solution(m, musicinfos): 
     musicinfos = [i.split(",") for i in musicinfos]
@@ -111,3 +61,68 @@ def solution(m, musicinfos):
     return result[0][1]
 
 ```
+### 프로그래머스 방금그곡 모듈화 코드 & 간결한 코드
+#### 모듈화
+```
+def convert_sharp(notes):
+    notes = list(notes)
+    for i in range(len(notes) - 1):
+        if notes[i + 1] == '#':
+            notes[i] = notes[i].lower()
+            notes[i + 1] = ''
+    return ''.join(notes)
+
+def convert_time(time_str):
+    h, m = map(int, time_str.split(':'))
+    return h * 60 + m
+
+def get_played_notes(play_time, sheet_music):
+    sheet_len = len(sheet_music)
+    played_len = play_time // sheet_len
+    played_rem = play_time % sheet_len
+    return sheet_music * played_len + sheet_music[:played_rem]
+
+def solution(m, musicinfos):
+    m = convert_sharp(m)
+    result = []
+    
+    for i, musicinfo in enumerate(musicinfos):
+        start, end, title, sheet_music = musicinfo.split(',')
+        start, end = map(convert_time, [start, end])
+        play_time = end - start
+        sheet_music = convert_sharp(sheet_music)
+        played_notes = get_played_notes(play_time, sheet_music)
+        
+        if m in played_notes:
+            result.append((play_time, i, title))
+    
+    if not result:
+        return "(None)"
+    
+    result.sort(key=lambda x: (-x[0], x[1]))
+    return result[0][2]
+```
+#### 간결화
+```
+def convert(time):
+    h, m = map(int, time.split(':'))
+    return h * 60 + m
+
+def solution(m, musicinfos):
+    m = m.replace('A#', 'a').replace('C#', 'c').replace('D#', 'd').replace('F#', 'f').replace('G#', 'g')
+    result = []
+    for i, musicinfo in enumerate(musicinfos):
+        start, end, title, sheet = musicinfo.split(',')
+        start, end = map(convert, [start, end])
+        sheet = sheet.replace('A#', 'a').replace('C#', 'c').replace('D#', 'd').replace('F#', 'f').replace('G#', 'g')
+        play_time = end - start
+        played_notes = (sheet * (play_time // len(sheet))) + sheet[:play_time % len(sheet)]
+        if m in played_notes:
+            result.append((play_time, i, title))
+    if not result:
+        return "(None)"
+    result.sort(key=lambda x: (-x[0], x[1]))
+    return result[0][2]
+```
+
+
