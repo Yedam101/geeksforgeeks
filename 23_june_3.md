@@ -73,8 +73,8 @@ def convert_sharp(notes):
     return ''.join(notes)
 
 def convert_time(time_str):
-    h, m = map(int, time_str.split(':'))
-    return h * 60 + m
+    m, s = map(int, time_str.split(':'))
+    return m * 60 + s
 
 def get_played_notes(play_time, sheet_music):
     sheet_len = len(sheet_music)
@@ -105,8 +105,8 @@ def solution(m, musicinfos):
 #### 간결화
 ```
 def convert(time):
-    h, m = map(int, time.split(':'))
-    return h * 60 + m
+    m, s = map(int, time.split(':'))
+    return m * 60 + s
 
 def solution(m, musicinfos):
     m = m.replace('A#', 'a').replace('C#', 'c').replace('D#', 'd').replace('F#', 'f').replace('G#', 'g')
@@ -124,5 +124,68 @@ def solution(m, musicinfos):
     result.sort(key=lambda x: (-x[0], x[1]))
     return result[0][2]
 ```
+### 프로그래머스 오픈채팅방
+#### 내 답
+```
+def solution(record):
+    record = [[k] + v.split() for k, v in enumerate(record)]
+    dict = {}
+    for item in record:
+        key = item[2]
+        value = item[:2] + item[3:]  
+        if key in dict:
+            dict[key].append(value)
+        else:
+            dict[key] = [value]
+    result = []
+    for k in dict.keys():
+        info = dict[k]
+        n = -1
+        if info[n][1] == 'Leave':
+            n -= 1
+        for j in info:
+            if len(j) == 3:
+                j[-1] = info[n][2]
+            else:
+                j.append(info[n][2])
+            result.append(j)
+    result = sorted(result)
+    answer = []
+    for i in result:
+        if i[1] == 'Enter':
+            temp = f"{i[2]}님이 들어왔습니다."
+            answer.append(temp)
+        elif i[1] == 'Leave':
+            temp = f"{i[2]}님이 나갔습니다."
+            answer.append(temp)
 
+    return answer
+```
+#### 더 좋은 답
+```
+def solution(record):
+    userDict = {}
+    answer = []
+
+    for line in record:
+        line = line.split(" ")
+
+        if line[0] == "Enter":
+            userDict[line[1]] = line[2]
+        elif line[0] == "Change":
+            userDict[line[1]] = line[2]
+
+    for line in record:
+        line = line.split(" ")
+        targetString = userDict[line[1]]
+        if line[0] == "Enter":
+            targetString += "님이 들어왔습니다."
+        elif line[0] == "Leave":
+            targetString += "님이 나갔습니다."
+        else:
+            continue
+        answer.append(targetString)
+
+    return answer
+```
 
