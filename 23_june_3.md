@@ -188,4 +188,18 @@ def solution(record):
 
     return answer
 ```
+### 스킬트리
+```
+def solution(skill, skill_trees):
+    count = 0
+    skilll = list(skill)
+    for i in skill_trees:
+        temp = ""
+        for j in range(len(i)):
+            if i[j] in skilll:
+                temp += i[j]
+        if skill[:len(temp)] == temp:
+            count += 1
+    return count
+```
 
