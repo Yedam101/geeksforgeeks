@@ -202,4 +202,47 @@ def solution(skill, skill_trees):
             count += 1
     return count
 ```
+### 방문 길이
+```
+def solution(dirs):
+    d = {'U':[0,1], 'D':[0,-1], 'R':[1,0], 'L':[-1,0]}
+    cur = [0,0]
+    count = 0
+    route = []
+    for i in dirs:
+        tmp_cur = [cur[0] + d[i][0], cur[1] + d[i][1]]
+        tmp = cur+tmp_cur
+        if not -5 <= tmp_cur[0] <= 5 or not -5 <= tmp_cur[1] <= 5:
+            continue
+        rev_tmp = tmp_cur+cur
+        if tmp not in route or rev_tmp not in route:
+            route.append(tmp)
+            route.append(rev_tmp)
+            count += 1
+        cur = tmp_cur
+    return count
+```
+#### 방문 길이 개선된 코드 set으로 중복 걸러냄
+```
+def solution(dirs):
+    d = {'U': [0, 1], 'D': [0, -1], 'R': [1, 0], 'L': [-1, 0]}
+    cur = [0, 0]
+    route = set()
+    count = 0
+    for i in dirs:
+        tmp_cur = [cur[0] + d[i][0], cur[1] + d[i][1]]
+        if not -5 <= tmp_cur[0] <= 5 or not -5 <= tmp_cur[1] <= 5:
+            continue
+        move = cur + tmp_cur
+        if move not in route:
+            route.add(move)
+            route.add(tmp_cur + cur)
+            count += 1
+        cur = tmp_cur
+    return count
+```
 
+    
+    
+
+    
