@@ -10,3 +10,4 @@ def solution(n):
         
     return nums[n]
 ```
+
