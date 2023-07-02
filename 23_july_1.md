@@ -11,3 +11,42 @@ def solution(n):
     return nums[n]
 ```
 
+### 프로그래머스 타겟 넘버
+
+```
+# global 
+
+answer = 0
+
+def solution(num, target):
+    
+    def dfs(idx, result):
+        if idx == len(num):
+            if result == target:
+                global answer
+                answer += 1
+                return answer
+        else:
+            dfs(idx+1, result+num[idx])
+            dfs(idx+1, result-num[idx])
+        
+    dfs(0,0)
+    return answer
+    
+# nonlocal
+
+def solution(num, target):
+    answer = 0
+    def dfs(idx, result):
+        if idx == len(num):
+            if result == target:
+                nonlocal answer
+                answer += 1
+                return answer
+        else:
+            dfs(idx+1, result+num[idx])
+            dfs(idx+1, result-num[idx])
+        
+    dfs(0,0)
+    return answer
+```
