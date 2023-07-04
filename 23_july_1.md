@@ -102,3 +102,96 @@ def solution(n):
 
     return count
 ```
+
+### 최댓값과 최솟값
+
+```
+def solution(s):
+    s = list(map(int, s.split()))
+    mm = []
+    mm.append(str(min(s)))
+    mm.append(str(max(s)))
+    return ' '.join(m for m in mm)
+```
+#### 다른 답
+```
+def solution(s):
+    s = list(map(int,s.split()))
+    return str(min(s)) + " " + str(max(s))
+```
+
+### 최솟값 만들기
+
+```
+def solution(A,B):
+    a = sorted(A)
+    b = sorted(B, reverse=True)
+    ab = list(zip(a,b))
+    mulab = [i*j for i, j in ab]
+    return sum(mulab)
+```
+
+### JadenCase 문자열 만들기
+
+```
+def solution(s):
+    point = 0
+    while point < len(s):
+        if point == 0 or not s[point-1].isalnum():
+            s = s[:point] + s[point].upper() + s[point+1:]
+        else:
+            s = s[:point] + s[point].lower() + s[point+1:]
+
+        point += 1
+    return 
+```
+
+### 전화번호 목록
+
+```
+def solution(p):
+    p = sorted(p)
+    for i in range(len(p)-1):
+        if p[i] == p[i+1][:len(p[i])]:
+            return False
+    return True
+```
+
+### 의상
+
+```
+from collections import defaultdict
+def solution(clothes):
+    dict = defaultdict(list)
+    
+    for i in range(len(clothes)):
+        if dict[clothes[i][1]] == []:
+            dict[clothes[i][1]] = [clothes[i][0]]
+
+        else:
+            dict[clothes[i][1]].append(clothes[i][0])
+    val = dict.values()
+    count = [len(i)+1 for i in val]
+    result = 1
+    for i in count:
+        result *= i
+    return result -1
+```
+
+### 다리를 지나는 트럭
+
+```
+def solution(bridge_length, weight, truck_weights):
+    sec = 1
+    q = []
+    q.append([truck_weights.pop(0),sec])
+
+
+    while q:
+        sec += 1
+        if q[0][1] + bridge_length == sec:
+            q.pop(0)
+        if truck_weights and sum([i[0] for i in q]) + truck_weights[0] <= weight and len(q) < bridge_length:
+            q.append([truck_weights.pop(0), sec])
+    return sec
+```
