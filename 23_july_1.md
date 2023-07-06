@@ -195,3 +195,69 @@ def solution(bridge_length, weight, truck_weights):
             q.append([truck_weights.pop(0), sec])
     return sec
 ```
+
+### 주식가격
+#### 효율성 통과 못 함
+```
+def solution(prices):
+    stack = []
+    psec = []
+    result = []
+    for s, v in enumerate(prices):
+        psec.append([v,s+1])
+            
+    
+    while psec:
+        if not stack:
+            stack.append(psec.pop(0))
+        elif psec[0][0] >= stack[-1][0]:
+            stack.append(psec.pop(0))
+        elif psec[0][0] < stack[-1][0]:
+            i, j = stack.pop()
+            k = psec[0][1] - j
+            result.append([i,j,k])
+    re = []
+    for i in stack:
+        j, k = i
+        p = len(prices) - k
+        re.append([j,k,p])
+    
+    result = sorted(re + result, key = lambda x:x[1])
+    
+    return [k for i,j,k in result]
+```
+
+#### 통과함
+
+```
+def solution(prices):
+    answer = [0] * len(prices)
+    stack = []
+
+    for i, price in enumerate(prices):
+        while stack and prices[stack[-1]] > price:
+            j = stack.pop()
+            answer[j] = i - j
+        stack.append(i)
+
+    while stack:
+        j = stack.pop()
+        answer[j] = len(prices) - 1 - j
+
+    return answer
+```
+
+#### 다른 사람 풀이
+
+```
+def solution(prices):
+    answer = [0] * len(prices)
+    for i in range(len(prices)):
+        for j in range(i+1, len(prices)):
+            if prices[i] <= prices[j]:
+                answer[i] += 1
+            else:
+                answer[i] += 1
+                break
+    return answer
+```
