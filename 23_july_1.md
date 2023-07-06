@@ -103,7 +103,7 @@ def solution(n):
     return count
 ```
 
-### 최댓값과 최솟값
+### 프로그래머스 최댓값과 최솟값
 
 ```
 def solution(s):
@@ -113,14 +113,14 @@ def solution(s):
     mm.append(str(max(s)))
     return ' '.join(m for m in mm)
 ```
-#### 다른 답
+#### 프로그래머스 다른 답
 ```
 def solution(s):
     s = list(map(int,s.split()))
     return str(min(s)) + " " + str(max(s))
 ```
 
-### 최솟값 만들기
+### 프로그래머스 최솟값 만들기
 
 ```
 def solution(A,B):
@@ -131,7 +131,7 @@ def solution(A,B):
     return sum(mulab)
 ```
 
-### JadenCase 문자열 만들기
+### 프로그래머스 JadenCase 문자열 만들기
 
 ```
 def solution(s):
@@ -146,7 +146,7 @@ def solution(s):
     return 
 ```
 
-### 전화번호 목록
+### 프로그래머스 전화번호 목록
 
 ```
 def solution(p):
@@ -157,7 +157,7 @@ def solution(p):
     return True
 ```
 
-### 의상
+### 프로그래머스 의상
 
 ```
 from collections import defaultdict
@@ -178,7 +178,7 @@ def solution(clothes):
     return result -1
 ```
 
-### 다리를 지나는 트럭
+### 프로그래머스 다리를 지나는 트럭
 
 ```
 def solution(bridge_length, weight, truck_weights):
@@ -196,7 +196,7 @@ def solution(bridge_length, weight, truck_weights):
     return sec
 ```
 
-### 주식가격
+### 프로그래머스 주식가격
 #### 효율성 통과 못 함
 ```
 def solution(prices):
@@ -260,4 +260,94 @@ def solution(prices):
                 answer[i] += 1
                 break
     return answer
+```
+
+### 125. Valid Palindrome
+
+```
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        S = ''
+        for i in s:
+            if i.isalnum():
+                S += i.lower()
+
+        left, right = 0, len(S) -1
+
+        while left < right:
+            if S[left] == S[right]:
+                left += 1
+                right -= 1
+            else:
+                return False
+        return True 
+```
+
+### 937. Reorder Data in Log Files
+
+```
+class Solution:
+    def reorderLogFiles(self, logs: List[str]) -> List[str]:
+        al = []
+        di = []
+
+        for i in range(len(logs)):
+            if logs[i][-1].isalpha():
+                al.append(logs[i])
+            else:
+                di.append(logs[i])
+        al = [i.split() for i in al]
+        al = sorted(al, key = lambda x : (x[1:], x[0]))
+        al = [" ".join(i) for i in al]
+        return al + di
+```
+
+### 819. Most Common Word
+#### 정규식 사용
+```
+from collections import Counter
+import re
+class Solution:
+    def mostCommonWord(self, paragraph: str, banned: List[str]) -> str:
+        par = re.sub(r'[^a-zA-Z0-9]', ' ', paragraph).lower()
+        par = par.split(" ")
+        par = Counter(par).most_common()
+        for i in par:
+            if i[0] not in banned and i[0] != "":
+                return i[0]
+```
+#### 정규식 사용 안함
+```
+from collections import Counter
+class Solution:
+    def mostCommonWord(self, paragraph: str, banned: List[str]) -> str:
+        p = ""
+        for i in paragraph:
+            if i.isalnum():
+                p += i.lower()
+            else:
+                p += " "
+        par = p.split(" ")
+        par = Counter(par).most_common()
+        for i in par:
+            if i[0] not in banned and i[0] != "":
+                return i[0]
+```
+
+### 49. Group Anagrams
+
+```
+from collections import defaultdict
+class Solution:
+    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+        dict = defaultdict(list)
+
+        for i in strs:
+            if ''.join(sorted(i)) in dict:
+                dict[''.join(sorted(i))].append(i)
+            else:
+                dict[''.join(sorted(i))] = [i]
+
+        v = list(dict.values())
+        return v
 ```

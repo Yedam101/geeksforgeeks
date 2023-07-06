@@ -2,3 +2,9 @@
 42. Trapping Rain Water
 424. Longest Repeating Character Replacement
 22. Generate Parentheses
+
+--------------------------------------------
+5. Longest Palindromic Substring
+42. Trapping Rain Water
+
+
