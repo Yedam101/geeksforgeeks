@@ -105,3 +105,120 @@ def solution(targets):
 
     return answer
 ```
+
+### 40. Combination Sum II
+
+```
+class Solution:
+    def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
+        result = []
+        candidates.sort()
+        def dfs(cur, idx, path):
+            if cur > target: return
+            if cur == target:
+                result.append(path)
+                return
+            for i in range(idx, len(candidates)):
+                if i > idx and candidates[i] == candidates[i-1]:
+                    continue
+                dfs(cur+candidates[i], i+1, path+[candidates[i]])
+        dfs(0, 0, [])
+        return result
+```
+
+### 743. Network Delay Time
+
+```
+from collections import defaultdict
+class Solution:
+    def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
+        # u now, v destination, w dist
+
+        dict = defaultdict(list)
+        for u,v,w in times:
+            dict[u].append([w,v])
+
+        q = []
+        dist = [100000001]*(n+1)
+        dist[k] = 0
+        heapq.heappush(q,(0,k))
+
+        while q:
+            d, n = heapq.heappop(q)
+            if dist[n] < d:  # 이 if 문 안 넣어도 문제없이 돌아가지만 넣으면 속도 단축
+                continue
+            for i in dict[n]:
+                cost = d + i[0]
+                if cost < dist[i[1]]:
+                    dist[i[1]] = cost
+                    heapq.heappush(q, (cost, i[1]))
+
+        dist = dist[1:]
+        if max(dist) == 100000001:
+            return -1
+        else:
+            return max(dist)
+```
+
+### 787. Cheapest Flights Within K Stops
+
+```
+from collections import defaultdict
+import heapq
+
+class Solution:
+    def findCheapestPrice(self, n: int, flights: List[List[int]], src: int, dst: int, K: int) -> int:
+        dict = defaultdict(list)
+        for u, v, w in flights:
+            dict[u].append((v, w))
+
+        q = [(0, src, K + 1)] 
+        dist = {}  
+
+        while q:
+            d, node, k = heapq.heappop(q)
+            if k < 0:
+                continue
+            if node == dst:
+                return d
+            if node not in dist or k > dist[node]:
+                dist[node] = k
+                for v, w in dict[node]:
+                    cost = d + w
+                    heapq.heappush(q, (cost, v, k - 1))
+        return -1 if dst not in dist else dist[dst]
+```
+
+### 104. Maximum Depth of Binary Tree
+#### BFS 풀이
+```
+from collections import deque
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        if root is None:
+            return 0 
+        q = deque([root])
+        depth = 0
+
+        while q:
+            depth += 1
+            for _ in range(len(q)):
+                cur = q.popleft()
+                if cur.left:
+                    q.append(cur.left)
+                if cur.right:
+                    q.append(cur.right)
+        return depth
+```
+### 재귀 풀이
+```
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        def recur(root):
+            if not root:
+                return 0
+            r = helper(root.right)
+            l = helper(root.left)
+            return 1 + max(r, l)
+        return recur(root)
+```
