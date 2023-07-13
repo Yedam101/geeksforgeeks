@@ -222,3 +222,39 @@ class Solution:
             return 1 + max(r, l)
         return recur(root)
 ```
+
+### 687. Longest Univalue Path
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    mxlen = 0
+    def longestUnivaluePath(self, root: Optional[TreeNode]) -> int:
+
+        def recur(root):
+            if root is None:
+                return 0
+
+            l = recur(root.left)
+            r = recur(root.right)
+
+            if root.left and root.val == root.left.val:
+                l += 1
+            else:
+                l = 0
+            if root.right and root.val == root.right.val:
+                r += 1
+            else:
+                r = 0
+
+            self.mxlen = max(self.mxlen, l+r)
+            return max(l, r)
+        
+        recur(root)
+        return self.mxlen
+```
