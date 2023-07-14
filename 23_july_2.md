@@ -258,3 +258,150 @@ class Solution:
         recur(root)
         return self.mxlen
 ```
+
+### 프로그래머스 광물 캐기
+#### 내 답 - 길고 복잡
+```
+import math
+def solution(picks, minerals):
+            
+    tnum = sum(picks)
+    f = math.ceil(len(minerals) / 5)
+    td, ti, ts = picks
+    
+    if len(minerals) > tnum*5:
+        minerals = minerals[:tnum*5]
+    else:
+        if len(minerals) != f*5:
+            for i in range(f*5-len(minerals)):
+                minerals.append('zero')
+                
+    dict = {'diamond':25, 'iron':5, 'stone':1, 'zero':0}
+    weight = []
+    
+    for i in range(len(minerals)//5):
+        tmp = minerals[5*i:5*(i+1)]
+        count = 0
+        for j in tmp:
+            count += dict[j]
+        weight.append([count, i])
+    weight = sorted(weight, key = lambda x:-x[0])
+
+    for i in range(len(weight)):
+        if td != 0:
+            weight[i].append('D')
+            td -= 1
+        elif ti != 0:
+            weight[i].append('I')
+            ti -= 1
+        else:
+            weight[i].append('S')
+            ts -= 1
+    
+    weight = sorted(weight, key = lambda x:x[1])
+    result = 0
+
+    for i in range(len(weight)):
+        tmp = minerals[5*i:5*(i+1)]
+        if weight[i][2] == 'D':
+            tmp_dict = {"diamond":1, 'iron':1, 'stone':1, 'zero':0}
+        elif weight[i][2] == 'I':
+            tmp_dict = {"diamond":5, 'iron':1, 'stone':1, 'zero':0}
+        else:
+            tmp_dict = {"diamond":25, 'iron':5, 'stone':1, 'zero':0}
+        for j in tmp:
+            result += tmp_dict[j]
+    return result
+```
+#### 남의 답
+```
+def solution(picks, minerals):
+    def solve(picks, minerals, fatigue):
+        if sum(picks) == 0 or len(minerals) == 0:
+            return fatigue
+        result = [float('inf')]
+        for i, fatigues in enumerate(({"diamond": 1, "iron": 1, "stone": 1},
+                                      {"diamond": 5, "iron": 1, "stone": 1},
+                                      {"diamond": 25, "iron": 5, "stone": 1},)):
+            if picks[i] > 0:
+                temp_picks = picks.copy()
+                temp_picks[i] -= 1
+                result.append(
+                    solve(temp_picks, minerals[5:], fatigue + sum(fatigues[mineral] for mineral in minerals[:5])))
+        return min(result)
+
+    return solve(picks, minerals, 0)
+```
+
+### 프로그래머스 리코쳇 로봇
+#### 내 답
+
+```
+from collections import deque
+def solution(board):
+    board = [list(i) for i in board]
+    m, n = len(board), len(board[0])
+    dx = [0,0,1,-1]
+    dy = [1,-1,0,0]
+    
+    start, end = None, None
+    for i in range(m):
+        for j in range(n):
+            if board[i][j] == 'R':
+                start = (i, j)
+            elif board[i][j] == 'G':
+                end = (i, j)
+    
+    def bfs(start):
+        q = deque([start])
+        visited = [[False]*n for _ in range(m)]
+        visited[start[0]][start[1]] = True
+        count = [[0]*n for _ in range(m)]
+        
+        while q:
+            x, y = q.popleft()
+            for i in range(4):
+                nx, ny = x, y
+                while True:
+                    nx += dx[i]
+                    ny += dy[i]
+                    if nx < 0 or nx >= m or ny < 0 or ny >= n or board[nx][ny] == 'D':
+                        nx -= dx[i]
+                        ny -= dy[i]
+                        break
+                if visited[nx][ny] == False:
+                    visited[nx][ny] = True
+                    count[nx][ny] = count[x][y] + 1
+                    q.append((nx, ny))
+                    
+        return count[end[0]][end[1]] if visited[end[0]][end[1]] else -1
+
+    return bfs(start)
+```
+#### 좀 더 간결한 남의 답
+```
+def solution(board):
+    que = []
+    for x, row in enumerate(board):
+        for y, each in enumerate(row):
+            if board[x][y] == 'R':
+                que.append((x, y, 0))
+    visited = set()
+    while que:
+        x, y, length = que.pop(0)
+        if (x, y) in visited:
+            continue
+        if board[x][y] == 'G':
+            return length
+        visited.add((x, y))
+        for diff_x, diff_y in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+            now_x, now_y = x, y
+            while True:
+                next_x, next_y = now_x + diff_x, now_y + diff_y
+                if 0 <= next_x < len(board) and 0 <= next_y < len(board[0]) and board[next_x][next_y] != 'D':
+                    now_x, now_y = next_x, next_y
+                    continue
+                que.append((now_x, now_y, length + 1))
+                break
+    return -1
+```
