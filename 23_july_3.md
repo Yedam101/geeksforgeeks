@@ -92,3 +92,40 @@ def solution(maps):
         return -1
     return StoL + LtoE
 ```
+
+### 프로그래머스 호텔 대실
+#### 내 답. 우선순위 큐 사용
+```
+import heapq
+
+def solution(book_time):
+    book = []
+    for s, e in book_time:
+        s = int(s[:2])*60 + int(s[3:])
+        e = int(e[:2])*60 + int(e[3:]) + 10
+        book.append([s, e])
+    book.sort()
+
+    rooms = []
+    for s, e in book:
+        if rooms and rooms[0] <= s:
+            heapq.heappop(rooms)
+        heapq.heappush(rooms, e)
+
+    return len(rooms)
+```
+#### 다른 답 누적합
+```
+def solution(book_time):
+    time_table = [0 for _ in range(60 * 24)]
+    for start, end in book_time:
+        start_minutes = 60 * int(start[:2]) + int(start[3:])
+        end_minutes = 60 * int(end[:2]) + int(end[3:]) + 10
+
+        if end_minutes > 60 * 24 - 1:
+            end_minutes = 60 * 24 - 1
+
+        for i in range(start_minutes, end_minutes):
+            time_table[i] += 1
+    return max(time_table)
+```
